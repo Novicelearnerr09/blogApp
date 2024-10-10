@@ -22,7 +22,7 @@ public class PostController {
         PostDto createPost= postService.createPost(postDto,userId,categoryId);
         return new ResponseEntity<>(createPost, HttpStatus.CREATED);
     }
-
+//abcd
     //Get by user
     @GetMapping("user/{userId}/posts")
     public ResponseEntity<List<PostDto>> getPostByUser(@PathVariable Integer userId)
