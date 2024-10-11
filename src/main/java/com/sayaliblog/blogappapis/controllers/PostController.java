@@ -3,6 +3,7 @@ package com.sayaliblog.blogappapis.controllers;
 import com.sayaliblog.blogappapis.entities.Post;
 import com.sayaliblog.blogappapis.payloads.ApiResponse;
 import com.sayaliblog.blogappapis.payloads.PostDto;
+import com.sayaliblog.blogappapis.payloads.PostResponse;
 import com.sayaliblog.blogappapis.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,11 +52,14 @@ public class PostController {
     }
     //get all post
     @GetMapping("/")
-    public ResponseEntity<List<PostDto>> getAllPost()
+    public ResponseEntity<PostResponse> getAllPost(
+            @RequestParam(value="pageNumber", defaultValue="1", required = false) Integer pageNumber,
+            @RequestParam(value="pageSize", defaultValue="5", required = false) Integer pageSize,
+    @RequestParam(value ="sortBy",defaultValue = "post_Id", required = false) String sortBy)
     {
-       List<PostDto> postsDto = this.postService.getAllPosts();
+       PostResponse postResponse = this.postService.getAllPosts(pageNumber, pageSize, sortBy);
 
-       return new ResponseEntity<List<PostDto>>(postsDto, HttpStatus.OK);
+       return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
     }
 
     //delete

@@ -6,12 +6,17 @@ import com.sayaliblog.blogappapis.entities.User;
 import com.sayaliblog.blogappapis.exceptions.ResourceNotFoundException;
 import com.sayaliblog.blogappapis.payloads.CategoryDto;
 import com.sayaliblog.blogappapis.payloads.PostDto;
+import com.sayaliblog.blogappapis.payloads.PostResponse;
 import com.sayaliblog.blogappapis.repositories.CategoryRepo;
 import com.sayaliblog.blogappapis.repositories.PostRepo;
 import com.sayaliblog.blogappapis.repositories.UserRepo;
 import com.sayaliblog.blogappapis.services.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -76,12 +81,29 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy ) {
 
-        List<Post> allpost = this.postrepo.findAll();
-        List<PostDto> postDtos= allpost.stream().map((cate)->this.modelMapper.map(cate, PostDto.class)).collect(Collectors.toList());
+//        int pageSize = 5;
+//        int pageNumber = 2;
+
+        Pageable p = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+
+        Page<Post> pagePost = this.postrepo.findAll(p);
+
+        List<Post> allPosts = pagePost.getContent();
+
+       // List<Post> allpost = this.postrepo.findAll();
+        List<PostDto> postDtos= allPosts.stream().map((cate)->this.modelMapper.map(cate, PostDto.class)).collect(Collectors.toList());
        // List<CategoryDto> categoryDtos= category.stream().map((cate)->this.modelMapper.map(cate,CategoryDto.class)).collect(Collectors.toList());
-        return postDtos;
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(pagePost.getNumber());
+        postResponse.setPageSize(pagePost.getSize());
+        postResponse.setTotalElements(pagePost.getNumberOfElements());
+        postResponse.setTotalPages(pagePost.getTotalPages());
+        postResponse.setLastPage(pagePost.isLast());
+
+        return postResponse;
     }
 
     @Override
