@@ -81,12 +81,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy ) {
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection ) {
 
 //        int pageSize = 5;
 //        int pageNumber = 2;
 
-        Pageable p = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+     //   Pageable p = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending()); - default set karna h tab
+        // Sort.by(sortby).descending(); - will work for ascending / descending
+        Sort sort = null;
+        if(sortDirection.equals("asc")) {
+            sort=Sort.by(sortBy).ascending();
+        }
+        else{
+            sort=Sort.by(sortBy).descending();
+        }
+        Pageable p = PageRequest.of(pageNumber, pageSize, sort);
+
+        //
 
         Page<Post> pagePost = this.postrepo.findAll(p);
 

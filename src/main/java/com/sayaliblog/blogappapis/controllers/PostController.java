@@ -55,9 +55,10 @@ public class PostController {
     public ResponseEntity<PostResponse> getAllPost(
             @RequestParam(value="pageNumber", defaultValue="1", required = false) Integer pageNumber,
             @RequestParam(value="pageSize", defaultValue="5", required = false) Integer pageSize,
-    @RequestParam(value ="sortBy",defaultValue = "post_Id", required = false) String sortBy)
+    @RequestParam(value ="sortBy",defaultValue = "post_Id", required = false) String sortBy,
+            @RequestParam(value="sortDir", defaultValue = "asc", required = false) String sortDir)
     {
-       PostResponse postResponse = this.postService.getAllPosts(pageNumber, pageSize, sortBy);
+       PostResponse postResponse = this.postService.getAllPosts(pageNumber, pageSize, sortBy, sortDir);
 
        return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
     }
@@ -70,7 +71,8 @@ public class PostController {
         this.postService.deletePost(id);
        return new ResponseEntity<ApiResponse>(new ApiResponse("Post deleted successfully", true), HttpStatus.OK);
     }
-
+//trying to push this code
+    
     //update
     @PutMapping("/{id}")
     ResponseEntity<PostDto> updatePost(@PathVariable Integer id, @RequestBody PostDto postDto)
